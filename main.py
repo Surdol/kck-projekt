@@ -16,20 +16,20 @@ from ipykernel.pylab.backend_inline import flush_figures
 
 NUMBER_OF_IMAGES = 1
 
-
+#load one image from file
 def load_image(file_location):
     filename = os.path.join(os.path.dirname(__file__), file_location)
     image = data.load(filename, as_grey=False)
     return image
 
-
+#collecting many images from file to table
 def load_all_images_from_directory():
     image = [];
     for i in range(NUMBER_OF_IMAGES):
         image.append(load_image("images/kosci" + str(i) + ".jpg"))
     return image
 
-
+#display all images from list
 def display_images(images):
     for i in images:
         plt.imshow(i, cmap='gray')
@@ -38,19 +38,20 @@ def display_images(images):
     plt.yticks([])
     plt.show()
 
-
+#collecting images to convert many images
 def convert_all_images(images):
     converted_images = []
     for i in images:
         converted_images.append(convert_image(i))
     return converted_images
 
-
+#function to convert single image
 def convert_image(image):
+    image = rgb2gray(image)
     image = feature.canny(image, 2.5)
     return image
 
-
+#function to plot stats of single image
 def plot_hist(image):
     histo, x = np.histogram(image, range(0, 256), density=True)
     plt.plot(histo)
@@ -58,13 +59,7 @@ def plot_hist(image):
     plt.show()
 
 
-def convert_to_gray(image):
-    # TODO zmiana na macierz 2d gray
-    # TODO rozbic na moduly
-    return image
-
-
 images = load_all_images_from_directory()
 display_images(images)
-# images = convert_all_images(images)
 plot_hist(images[0])
+images = convert_all_images(images)
