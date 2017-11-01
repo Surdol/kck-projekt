@@ -17,6 +17,8 @@ from ipywidgets import *
 from ipykernel.pylab.backend_inline import flush_figures
 
 
+NUMBER_OF_IMAGES = 1
+
 def load_image(file_location):
     filename = os.path.join(os.path.dirname(__file__), file_location)
     image = data.load(filename, as_grey=True)
@@ -25,7 +27,7 @@ def load_image(file_location):
 
 def load_all_images_from_directory():
     image = [];
-    for i in range(1):
+    for i in range(NUMBER_OF_IMAGES):
         image.append(load_image("images/kosci" + str(i) + ".jpg"))
     return image
 
