@@ -1,1 +1,1 @@
-print("ok")
+print("działa")
