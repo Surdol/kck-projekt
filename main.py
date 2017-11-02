@@ -56,9 +56,11 @@ def convert_all_images(images):
 # function to convert single image
 def convert_image(image):
     image = rgb2gray(image)
-    # image = filters.gaussian(image, 2.5)
-    binary = (image > 0.35) * 255
+    image = filters.gaussian(image**1.5, 2.5)
+    binary = (image > 0.3) * 255
     image = np.uint8(binary)
+    image = mp.dilation(image)
+    image = mp.erosion(image)
     return image
 
 
