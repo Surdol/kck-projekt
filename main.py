@@ -16,7 +16,7 @@ from ipywidgets import *
 from ipykernel.pylab.backend_inline import flush_figures
 import cv2.cv2
 
-NUMBER_OF_IMAGES = 4
+NUMBER_OF_IMAGES = 8
 
 
 # load one image from file
@@ -56,11 +56,42 @@ def convert_all_images(images):
 
 # function to convert single image
 def convert_image(image):
-    th, image = cv2.threshold(image, 90, 220, cv2.THRESH_BINARY_INV);
+    image = cv2.bitwise_not(image)
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    lower = np.array([90, 0, 180])
+    upper = np.array([150, 40, 250])
+    if image.mean() > 130:
+        lower = np.array([17, 0, 90])
+        upper = np.array([150, 40, 250])
+    if image.mean() > 140:
+        lower = np.array([90, 0, 180])
+        upper = np.array([150, 40, 250])
+    if image.mean() < 100:
+        lower = np.array([90, 0, 180])
+        upper = np.array([150, 30, 250])
 
-    #image = rgb2gray(image)
-    #image = mp.dilation(image)
-    #image = mp.erosion(image)
+    mask = cv2.inRange(hsv, lower, upper)
+    image = cv2.bitwise_and(image, image, mask=mask)
+
+    image = ski.filters.gaussian(image,3)
+
+    image = mp.dilation(image)
+    image = mp.erosion(image)
+
+
+
+    #image = np.uint8(image*256)
+    #image = cv2.cvtColor(image,cv2.COLOR_HSV2RGB)
+    #image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    #contours = measure.find_contours(image, 1, fully_connected= 'high')
+    #fig, ax = plt.subplots()
+    #ax.imshow(image, interpolation='nearest')
+    #for n, contour in enumerate(contours):
+    #    if shape(contour)[0] >60 and shape(contour)[0] <150:
+    #        ax.plot(contour[:, 1], contour[:, 0], linewidth=1)
+
+
+
     return image
 
 
@@ -79,4 +110,4 @@ def plot_all_hist(images):
 images = load_all_images_from_directory()
 images = convert_all_images(images)
 display_images(images)
-plot_all_hist(images)
+#plot_all_hist(images)
